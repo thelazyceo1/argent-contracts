@@ -11,12 +11,14 @@
     "ganache": "npx etherlime ganache --gasLimit=10700000 -e 10000",
     "test": "npx etherlime test --skip-compilation",
     "ctest": "npm run compile && npm run test",
-    "lint:contracts": "npx ethlint --dir .",
-    "ethlint-staged": "bash ./scripts/ethlint.sh"
+    "lint:solidity": "npx ethlint --dir .",
+    "lint:solidity:staged": "bash ./scripts/ethlint.sh",
+    "lint:js": "eslint .",
+    "lint:js:staged": "bash ./scripts/ethlint.sh"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run ethlint-staged"
+      "pre-commit": "npm run lint:solidity:staged && npm run lint:js:staged"
     }
   },
   "repository": {
@@ -47,5 +49,10 @@
     "ps-node": "^0.1.6",
     "solc": "0.5.4",
     "tinyreq": "^3.4.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1"
   }
 }
