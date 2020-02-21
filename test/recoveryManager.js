@@ -8,7 +8,7 @@ const Registry = require("../build/ModuleRegistry");
 const TestManager = require("../utils/test-manager");
 const { sortWalletByAddress, parseRelayReceipt } = require("../utils/utilities.js");
 
-describe("RecoveryManager", function () {
+describe.only("RecoveryManager", function () {
     this.timeout(10000);
 
     const manager = new TestManager(accounts);
@@ -20,12 +20,12 @@ describe("RecoveryManager", function () {
     let newowner = accounts[5].signer;
     let nonowner = accounts[6].signer;
 
-    let guardianManager, lockManager, recoveryManager, wallet;
+    let guardianManager, guardianStorage, lockManager, recoveryManager, wallet;
 
     beforeEach(async () => {
         deployer = manager.newDeployer();
         const registry = await deployer.deploy(Registry);
-        const guardianStorage = await deployer.deploy(GuardianStorage);
+        guardianStorage = await deployer.deploy(GuardianStorage);
         guardianManager = await deployer.deploy(GuardianManager, {}, registry.contractAddress, guardianStorage.contractAddress, 24, 12);
         lockManager = await deployer.deploy(LockManager, {}, registry.contractAddress, guardianStorage.contractAddress, 24 * 5);
         recoveryManager = await deployer.deploy(RecoveryManager, {}, registry.contractAddress, guardianStorage.contractAddress, 36, 24 * 5, 24, 12);
@@ -209,28 +209,27 @@ describe("RecoveryManager", function () {
         });
     })
 
-    describe.skip("Ownership Transfers", () => { // todo: skipped while reimplementing logic
-        it("should let owner + the majority of guardians execute an ownership transfer", async () => {
-            await recoveryManager.from(owner).executeOwnershipTransfer(wallet.contractAddress, newowner.address);
-            let walletOwner = await wallet.owner();
-            assert.equal(walletOwner, owner.address, 'owner should not have been changed yet');
+    describe("Ownership Transfers", () => {
+        let guardians
+        let majority;
 
-            await manager.increaseTime(30);
-            await recoveryManager.from(nonowner).finalizeOwnershipTransfer(wallet.contractAddress);
-            walletOwner = await wallet.owner();
-            assert.equal(walletOwner, newowner.address, 'owner should have been changed after the security period');
+        beforeEach(async () => {
+            guardians = await addGuardians([guardian1]);
+        });
+
+        it("should let owner + the majority of guardians execute an ownership transfer", async () => {
+            await manager.relay(recoveryManager, 'executeOwnershipTransfer', [wallet.contractAddress, newowner.address], wallet, [owner, guardian1]);
+            const walletOwner = await wallet.owner();
+            assert.equal(walletOwner, newowner.address, 'owner should have been changed');
         });
 
         it("should not let owner + minority of guardians execute an ownership transfer", async () => {
-            await recoveryManager.from(owner).executeOwnershipTransfer(wallet.contractAddress, newowner.address);
-            let walletOwner = await wallet.owner();
-            assert.equal(walletOwner, owner.address, 'owner should not have been changed.');
+            let txReceipt = await manager.relay(recoveryManager, 'executeOwnershipTransfer', [wallet.contractAddress, newowner.address], wallet, [owner]);
+            const success = parseRelayReceipt(txReceipt);
+            assert.isNotOk(success, "executeOwnershipTransfer should fail");
 
-            await manager.increaseTime(48); // 42 == 2 * security_period
-            await assert.revertWith(recoveryManager.finalizeOwnershipTransfer(wallet.contractAddress), "RM: Too late to confirm ownership transfer");
-
-            walletOwner = await wallet.owner();
-            assert.equal(walletOwner, owner.address, 'owner should not have been changed.');
+            const walletOwner = await wallet.owner();
+            assert.equal(walletOwner, owner.address, 'owner should not have been changed');
         });
     });
 });
