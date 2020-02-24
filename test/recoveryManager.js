@@ -203,7 +203,7 @@ describe("RecoveryManager", function () {
                 await addGuardians(guardians);
             });
 
-            testExecuteRecovery([guardian1, guardian2]);
+            testExecuteRecovery([guardian1, guardian2, guardian3]);
         });
     });
 
