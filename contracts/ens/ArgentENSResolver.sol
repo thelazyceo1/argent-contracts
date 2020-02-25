@@ -16,13 +16,13 @@
 pragma solidity ^0.5.4;
 import "../base/Owned.sol";
 import "../base/Managed.sol";
-import "./ENS.sol";
+import "./ENSResolver.sol";
 
 /**
  * @title ArgentENSResolver
  * @dev Basic implementation of a Resolver.
  * The contract defines a manager role who is the only role that can add a new name
- * to the list of resolved names. 
+ * to the list of resolved names.
  * @author Julien Niset - <julien@argent.im>
  */
 contract ArgentENSResolver is Owned, Managed, ENSResolver {
@@ -38,11 +38,6 @@ contract ArgentENSResolver is Owned, Managed, ENSResolver {
         address addr;
         string name;
     }
-
-    // *************** Events *************************** //
-
-    event AddrChanged(bytes32 indexed _node, address _addr);
-    event NameChanged(bytes32 indexed _node, string _name);
 
     // *************** Public Functions ********************* //
 

@@ -142,7 +142,7 @@ contract BaseModule is Module {
         bool success;
         // solium-disable-next-line security/no-call-value
         (success, _res) = _wallet.call(abi.encodeWithSignature("invoke(address,uint256,bytes)", _to, _value, _data));
-        if(success && _res.length > 0) { //_res is empty if _wallet is an "old" BaseWallet that can't return output values
+        if (success && _res.length > 0) { //_res is empty if _wallet is an "old" BaseWallet that can't return output values
             (_res) = abi.decode(_res, (bytes));
         } else if (_res.length > 0) {
             // solium-disable-next-line security/no-inline-assembly
@@ -150,7 +150,7 @@ contract BaseModule is Module {
                 returndatacopy(0, 0, returndatasize)
                 revert(0, returndatasize)
             }
-        } else if(!success) {
+        } else if (!success) {
             revert("BM: wallet invoke reverted");
         }
     }

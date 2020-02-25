@@ -2,7 +2,7 @@ const BaseWallet = require('../build/BaseWallet');
 const ModuleRegistry = require('../build/ModuleRegistry');
 const CompoundRegistry = require('../build/CompoundRegistry');
 const MultiSig = require('../build/MultiSigWallet');
-const ENS = require('../build/TestENSRegistry');
+const ENS = require('../build/ENSRegistryWithFallback');
 const ENSManager = require('../build/ArgentENSManager');
 const ENSResolver = require('../build/ArgentENSResolver');
 const WalletFactory = require('../build/WalletFactory');
@@ -53,7 +53,7 @@ const deploy = async (network, secret) => {
     // Deploy the ENS Manager
     const ENSManagerWrapper = await deployer.deploy(ENSManager, {}, walletRootEns, utils.namehash(walletRootEns), newConfig.ENS.ensRegistry, ENSResolverWrapper.contractAddress);
     // Deploy the Wallet Factory
-    const WalletFactoryWrapper = await deployer.deploy(WalletFactory, {}, newConfig.ENS.ensRegistry, ModuleRegistryWrapper.contractAddress, BaseWalletWrapper.contractAddress, ENSManagerWrapper.contractAddress, ENSResolverWrapper.contractAddress);
+    const WalletFactoryWrapper = await deployer.deploy(WalletFactory, {}, ModuleRegistryWrapper.contractAddress, BaseWalletWrapper.contractAddress, ENSManagerWrapper.contractAddress);
 
     ///////////////////////////////////////////////////
     // Making ENSManager owner of the root wallet ENS
