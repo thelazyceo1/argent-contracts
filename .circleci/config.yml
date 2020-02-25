@@ -36,8 +36,8 @@ jobs:
           name: "Compiling contracts"
           command: npm run compile
       - run:
-          name: "Running unit tests"
-          command: npm run ganache >/dev/null 2>&1 & npm run test
+          name: "Running coverage"
+          command: npm run test:coverage & npm run provision:lib:artefacts
       - run:
           name: "Testing deployment scripts"
           command: npm run ganache >/dev/null 2>&1 & npm run test:deployment
