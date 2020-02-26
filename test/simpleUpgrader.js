@@ -25,7 +25,7 @@ describe("Test SimpleUpgrader", function () {
 
     describe("Registering modules", () => {
 
-        it("should register modules in the registry", async () => {
+        it.skip("should register modules in the registry", async () => {
             let name = "test_1.1";
             let module = await deployer.deploy(Module, {}, registry.contractAddress, false, 0);
             await registry.registerModule(module.contractAddress, ethers.utils.formatBytes32String(name));
