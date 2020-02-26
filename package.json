@@ -14,7 +14,7 @@
     "lint:solidity": "npx ethlint --dir .",
     "lint:solidity:staged": "bash ./scripts/ethlint.sh",
     "lint:js": "eslint .",
-    "lint:js:staged": "bash ./scripts/ethlint.sh"
+    "lint:js:staged": "bash ./scripts/eslint.sh"
   },
   "husky": {
     "hooks": {
