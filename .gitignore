@@ -24,7 +24,6 @@ bin
 .vscode
 
 .env
-*.sh
 utils/config/*.json
 !utils/config/ganache.json
 
