@@ -300,6 +300,6 @@ contract RecoveryManager is BaseModule, RelayerModule {
         if (methodId == CANCEL_OWNERSHIP_TRANSFER_PREFIX) {
             return 1;
         }
-        revert("RM: unknown  method");
+        revert("RM: unknown method");
     }
 }
